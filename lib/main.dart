@@ -179,12 +179,22 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                         TextButton(
                           onPressed: () {
-                            _createNewApi(
-                              apiType,
-                              nameController.text,
-                              bodyController.text,
-                              context,
-                            );
+                            if (apiKey.isEmpty) {
+                              _createNewApi(
+                                apiType,
+                                nameController.text,
+                                bodyController.text,
+                                context,
+                              );
+                            } else {
+                              _editApi(
+                                apiKey,
+                                apiType,
+                                nameController.text,
+                                bodyController.text,
+                                context,
+                              );
+                            }
                           },
                           child: Text(
                             apiKey.isEmpty ? "Create API" : "Update API",
@@ -230,6 +240,28 @@ class _MyHomePageState extends State<MyHomePage> {
     Dio()
         .post(
       "https://api.korat.work/create_api/$apiType/$apiName",
+      data: apiBody,
+    )
+        .then((value) {
+      EasyLoading.dismiss();
+      Navigator.of(buildContext).pop();
+      refreshController.callRefresh();
+    }, onError: (_) {
+      EasyLoading.dismiss();
+    });
+  }
+
+  void _editApi(
+    String apiKey,
+    String apiType,
+    String apiName,
+    String apiBody,
+    BuildContext buildContext,
+  ) {
+    EasyLoading.show(status: 'loading...');
+    Dio()
+        .post(
+      "https://api.korat.work/edit/$apiKey/$apiType/$apiName",
       data: apiBody,
     )
         .then((value) {
