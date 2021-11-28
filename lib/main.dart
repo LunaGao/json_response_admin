@@ -105,7 +105,9 @@ class _MyHomePageState extends State<MyHomePage> {
     String apiType,
   ) {
     nameController.text = apiName;
-    bodyController.text = apiBody;
+    bodyController.text = Uri.decodeComponent(
+      apiBody,
+    );
     showDialog(
       context: context,
       builder: (buildContext) {
